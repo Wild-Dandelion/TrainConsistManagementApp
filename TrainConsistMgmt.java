@@ -1,51 +1,56 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TrainConsistMgmt {
+    static class Bogie {
+        String type;
+        int capacity;
+
+        Bogie(String type, int capacity) {
+            this.type = type;
+            this.capacity = capacity;
+        }
+    }
+
     public static void main(String[] args) {
 
-        System.out.println("\n================================");
-        System.out.println("UC12 Safety Compliance Check for Goods Bogies");
+        System.out.println("================================");
+        System.out.println("UC13 Performance Comparison (Loops vs Streams)");
         System.out.println("================================");
 
-        class GoodsBogie {
-            String type;
-            String cargo;
+        List<Bogie> bogies = new ArrayList<>();
 
-            GoodsBogie(String type, String cargo) {
-                this.type = type;
-                this.cargo = cargo;
-            }
-
-            void display() {
-                System.out.println(type + " -> " + cargo);
-            }
+        for (int i = 0; i < 100000; i++) {
+            if (i % 2 == 0)
+                bogies.add(new Bogie("Cylindrical", 100));
+            else
+                bogies.add(new Bogie("Open", 80));
         }
 
-        List<GoodsBogie> goodsList = new ArrayList<>();
+        long startLoop = System.nanoTime();
 
-        goodsList.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsList.add(new GoodsBogie("Open", "Coal"));
-        goodsList.add(new GoodsBogie("Box", "Grain"));
-        goodsList.add(new GoodsBogie("Cylindrical", "Coal")); // Invalid
-
-        System.out.println("Goods Bogies in Train:");
-        goodsList.forEach(b -> b.display());
-
-        boolean isSafe = goodsList.stream().allMatch(b -> {
+        List<Bogie> loopResult = new ArrayList<>();
+        for (Bogie b : bogies) {
             if (b.type.equalsIgnoreCase("Cylindrical")) {
-                return b.cargo.equalsIgnoreCase("Petroleum");
+                loopResult.add(b);
             }
-            return true;
-        });
-
-        System.out.println("Safety Compliance Status: " + isSafe);
-
-        if (isSafe) {
-            System.out.println("Train formation is SAFE.");
-        } else {
-            System.out.println("Train formation is NOT SAFE.");
         }
 
-        System.out.println("UC12 safety validation completed....");
+        long endLoop = System.nanoTime();
+        long loopTime = endLoop - startLoop;
+
+        long startStream = System.nanoTime();
+
+        List<Bogie> streamResult = bogies.stream()
+                .filter(b -> b.type.equalsIgnoreCase("Cylindrical"))
+                .collect(Collectors.toList());
+
+        long endStream = System.nanoTime();
+        long streamTime = endStream - startStream;
+
+        System.out.println("Loop Execution Time (ns): " + loopTime);
+        System.out.println("Stream Execution Time (ns): " + streamTime);
+
+        System.out.println("UC13 performance benchmarking completed...");
     }
 }
