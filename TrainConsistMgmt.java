@@ -26,7 +26,7 @@ public class TrainConsistMgmt {
         goodsList.add(new GoodsBogie("Cylindrical", "Petroleum"));
         goodsList.add(new GoodsBogie("Open", "Coal"));
         goodsList.add(new GoodsBogie("Box", "Grain"));
-        goodsList.add(new GoodsBogie("Cylindrical", "Coal")); // Invalid
+        goodsList.add(new GoodsBogie("Cylindrical", "Coal")); 
 
         System.out.println("Goods Bogies in Train:");
         goodsList.forEach(b -> b.display());
