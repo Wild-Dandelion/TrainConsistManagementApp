@@ -1,46 +1,51 @@
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 public class TrainConsistMgmt {
     public static void main(String[] args) {
 
+        System.out.println("\n================================");
+        System.out.println("UC12 Safety Compliance Check for Goods Bogies");
         System.out.println("================================");
-        System.out.println("UC11 Validate Train ID and Cargo Code ");
-        System.out.println("================================\n");
 
-        Scanner scanner = new Scanner(System.in);
+        class GoodsBogie {
+            String type;
+            String cargo;
 
-        System.out.print("Enter Train ID (Format: TRN-): ");
-        String trainID = scanner.nextLine();
-        System.out.println("");
+            GoodsBogie(String type, String cargo) {
+                this.type = type;
+                this.cargo = cargo;
+            }
 
-        System.out.print("Enter Cargo Code (Format: PET-AB): ");
-        String cargoCode = scanner.nextLine();
-        System.out.println("");
-
-        Pattern pattern = Pattern.compile("TRN-\\d{4}", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(trainID);
-        boolean matchFound = matcher.find();
-        System.out.print("Train Code Valid: ");
-        if(matchFound) {
-            System.out.println("True");
-        }
-        else{
-            System.out.println("False");
+            void display() {
+                System.out.println(type + " -> " + cargo);
+            }
         }
 
-        Pattern cargoCodePattern = Pattern.compile("PET-[A-Z]{2}", Pattern.CASE_INSENSITIVE);
-        Matcher cargoCodeMatcher = cargoCodePattern.matcher(cargoCode);
-        boolean matchFoundCargoCode = cargoCodeMatcher.find();
-        System.out.print("Cargo Code Valid: ");
-        if(matchFoundCargoCode) {
-            System.out.println("True");
+        List<GoodsBogie> goodsList = new ArrayList<>();
+
+        goodsList.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        goodsList.add(new GoodsBogie("Open", "Coal"));
+        goodsList.add(new GoodsBogie("Box", "Grain"));
+        goodsList.add(new GoodsBogie("Cylindrical", "Coal")); // Invalid
+
+        System.out.println("Goods Bogies in Train:");
+        goodsList.forEach(b -> b.display());
+
+        boolean isSafe = goodsList.stream().allMatch(b -> {
+            if (b.type.equalsIgnoreCase("Cylindrical")) {
+                return b.cargo.equalsIgnoreCase("Petroleum");
+            }
+            return true;
+        });
+
+        System.out.println("Safety Compliance Status: " + isSafe);
+
+        if (isSafe) {
+            System.out.println("Train formation is SAFE.");
+        } else {
+            System.out.println("Train formation is NOT SAFE.");
         }
-        else{
-            System.out.println("False");
-        }
-        System.out.println("\nUC11 validation completed...");
+
+        System.out.println("UC12 safety validation completed....");
     }
 }
